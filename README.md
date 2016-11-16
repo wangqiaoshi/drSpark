@@ -10,13 +10,16 @@ drSpark是一个基于spark的智能优化平台.
 
 #组成
 ###收集器
+
 * SparkListener
 * Spark metrics
 * drSpark metrics
 * spark,hdfs logback
 
 ###发送器
+
 * drSpark producer
 
 ###落地存储
+
 * drSpark comsumer
