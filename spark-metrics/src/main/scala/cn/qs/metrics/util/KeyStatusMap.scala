@@ -1,6 +1,5 @@
 package cn.qs.metrics.util
 
-import java.beans.Transient
 
 import scala.collection.mutable
 import java.util.TimerTask
@@ -25,16 +24,7 @@ class KeyStatusMap(overTime:Int,period:Int,
                    url:String, userName:String="user", password:String="pass")
   extends Serializable with Logging{
 
-  //1200000  //1800000
-//  private val overTime = 3000
-//  private val period = 2000
-
-
-
-
-
-
-  @transient  val timer = new Timer()
+  val timer = new Timer("timer",true)
   timer.schedule(new MapTimerTask(), 100,period)
 
 
@@ -43,7 +33,6 @@ class KeyStatusMap(overTime:Int,period:Int,
     * @param keyStatus
     */
   def put(key:String,keyStatus: KeyStatus): Unit = synchronized {
-    log.info("put has map size:{}",hashMap.size)
     hashMap.put(key, keyStatus)
   }
 
@@ -61,23 +50,20 @@ class KeyStatusMap(overTime:Int,period:Int,
         else keyStatus.status=true
       case None=>
     }
-    log.info("finish has map size:{}",hashMap.size)
-
   }
+
 
 
   /**
     * map定时器,将运行时间超过overTime,发送报告
     */
-  class MapTimerTask extends TimerTask with Serializable with Logging{
+  class MapTimerTask extends TimerTask with Serializable{
 
-    @transient  val keyStatusInfluxdbDao = new KeyStatusInfluxdbDao(url,userName,password)
+    val keyStatusInfluxdbDao = new KeyStatusInfluxdbDao(url,userName,password)
     override def run(): Unit = {
 
-      log.info("timer get the KeyStatus of overtime")
       val list = getOvertime()
       keyStatusInfluxdbDao.save(list)
-      log.info("timer save the KeyStatus of overtime,size:{}",list.size)
     }
 
     /**
@@ -87,7 +73,6 @@ class KeyStatusMap(overTime:Int,period:Int,
     def getOvertime(): mutable.MutableList[KeyStatus] ={
 
       val overList = new mutable.MutableList[KeyStatus]()
-      log.info("task has map size:{}",hashMap.size)
       hashMap.foreach{case (key:String,keyStatus:KeyStatus)=>{
 
         if(keyStatus.interval()>= overTime){
@@ -100,8 +85,6 @@ class KeyStatusMap(overTime:Int,period:Int,
       }}
       overList
     }
-
-
   }
 }
 

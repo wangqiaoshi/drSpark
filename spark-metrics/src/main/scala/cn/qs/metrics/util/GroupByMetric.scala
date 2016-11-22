@@ -1,6 +1,7 @@
 package cn.qs.metrics.util
 
-import java.util.Timer
+
+import java.io.{FileOutputStream, ObjectOutputStream}
 
 import org.apache.spark.{SparkConf, SparkEnv}
 
@@ -25,15 +26,32 @@ object GroupByMetric{
     val password = sparkConf.get("spark.metrics.dr.pass","pass")
     new GroupByMetric(overTime, period, url, userName, password)
   }
+
+
+
+  def main(args: Array[String]) {
+
+
+    println("xxx")
+    val groupByMetric = new GroupByMetric(2000,1000,"122")
+     val fos = new FileOutputStream("tempdata.ser")
+     val oos = new ObjectOutputStream(fos)
+    oos.writeObject(groupByMetric)
+    oos.close()
+
+
+
+  }
  
 
 }
 
 class GroupByMetric(overTime:Int,period:Int,
-                    url:String, userName:String="user", password:String="pass") extends Serializable{
+                    url:String, userName:String="user", password:String="pass")
+  extends Serializable{
 
 
-  val keyStatusMap = new KeyStatusMap(overTime,period,url,userName,password)
+  @transient  lazy val keyStatusMap = new KeyStatusMap(overTime,period,url,userName,password)
 
 
   def register(key:String): Unit ={
