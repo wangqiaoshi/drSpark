@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans classpath:spring-beans.xsd
+        http://www.springframework.org/schema/context classpath:spring-context-4.0.xsd
+        http://www.springframework.org/schema/mvc classpath:spring-mvc-4.0.xsd">
+
+    <!-- 配置自动扫描的包 -->
+    <context:component-scan base-package="cn.qs.action"></context:component-scan>
+
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+    <!-- 配置视图解析器 如何把handler 方法返回值解析为实际的物理视图 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>-->
+        <property name = "prefix" value="/home/"></property>
+        <property name = "suffix" value = ".jsp"></property>
+    </bean>
+
+    <mvc:annotation-driven />
+    <mvc:resources mapping="/home/css/**" location="/home/css/"></mvc:resources>
+    <mvc:resources mapping="/home/font-awesome/**" location="/home/font-awesome/"></mvc:resources>
+    <mvc:resources mapping="/home/js/**" location="/home/js/"></mvc:resources>
+    <mvc:resources mapping="/home/fonts/**" location="/home/fonts/"></mvc:resources>
+    <mvc:resources mapping="/home/**" location="/home/"></mvc:resources>
+
+    <mvc:view-controller path="/" view-name="index"/>
+
+</beans>
